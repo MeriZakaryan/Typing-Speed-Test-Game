@@ -2,6 +2,7 @@ import json
 import time
 import datetime
 import random
+import uuid
 
 DATA_JSON = "data.json"
 HISTORY_JSON = "history.json"
@@ -36,10 +37,10 @@ def get_history():
         with open(HISTORY_JSON, "r") as history_file:
             content = history_file.read()
             if not content.strip():
-                return []  # File is empty
+                return {}  
             return json.loads(content)
     except FileNotFoundError:
-        return []
+        return {}
     
 
 def save_data(data):
@@ -81,7 +82,7 @@ def calculate_reults(start, end, text, typed_text):
     return wpm, word_accuracy, char_accuracy
 
 
-def start_game(data, history):
+def start_game(data, history, user_id):
     print("\n Choose level difficulty:")
     print("1. Easy")
     print("2. Medium")
@@ -120,35 +121,38 @@ def start_game(data, history):
 
     current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    history.append({
+    info = {
         "difficulty": level,
         "wpm": round(wpm, 2),
         "word_accuracy": round(word_accuracy, 2),
         "char_accuracy": round(char_accuracy, 2),
         "date": current_date
-    }) 
+    }
 
-    if len(history) > data["history_limit"]:
-        history.pop(0)
+    history[user_id]["info"].append(info)
+
+    if len(history[user_id]["info"]) > data["history_limit"]:
+        history[user_id]["info"].pop(0)
 
     save_history(history)
     print("Test data saved to history.\n")
 
 
-def view_history(history):
+def view_history(history, user_id):
     print("\nGame History")
     print("-"*100)
 
-    if not history:
+    user_info = history[user_id]["entries"]
+    if not user_info:
         print("No history available.")
         return
-    
-    for entry in history:
-        print(f"Difficulty Level: {entry['difficulty']}")
-        print(f"WPM: {entry['wpm']}")
-        print(f"Word Accuracy: {entry['word_accuracy']}%")
-        print(f"Character Accuracy: {entry['char_accuracy']}%")
-        print(f"Date: {entry['date']}\n")
+
+    for info in user_info:
+        print(f"Difficulty Level: {info['difficulty']}")
+        print(f"WPM: {info['wpm']}")
+        print(f"Word Accuracy: {info['word_accuracy']}%")
+        print(f"Character Accuracy: {info['char_accuracy']}%")
+        print(f"Date: {info['date']}\n")
 
 
 def change_limit(data):
@@ -164,9 +168,63 @@ def change_limit(data):
         print("Invalid input. Enter a number.")
 
 
+def add_user(history):
+    username = input("Enter your username: ")
+    matching_users = {}
+    for id, data in history.items():
+        if username == data["username"]:
+            matching_users[id] = data
+    
+    if matching_users:
+        print(f"Found {len(matching_users)} user(s) named '{username}':")
+        count = 1
+        for (id, data) in matching_users.items():
+            print(f"{count}. ID: {id}, Information: {len(data['info'])}")
+            count += 1
+        
+        print("N. Create new user")
+        choice = input("Choose a user [1-N] or 'N': ").strip().lower()
+
+        if choice == 'n':
+            user_id = str(uuid.uuid4())
+            history[user_id] = {
+                "username": username,
+                "info": []
+            }
+        else:
+            try:
+                index = int(choice) - 1
+                selected_user = list(matching_users.items())[index]
+                user_id = selected_user[0]
+            except ValueError:
+                print("Invalid choice (not a number). Creating new user.")
+                user_id = str(uuid.uuid4())
+                history[user_id] = {
+                    "username": username,
+                    "info": []
+                }
+            except IndexError:
+                print("Invalid choice (index out of range). Creating new user.")
+                user_id = str(uuid.uuid4())
+                history[user_id] = {
+                    "username": username,
+                    "info": []
+                }
+    else:
+        print("No existing users with that name. Creating a new user.")
+        user_id = str(uuid.uuid4())
+        history[user_id] = {
+            "username": username,
+            "info": []
+        }
+
+    return user_id
+
+
 def main():
     data = get_data()
     history = get_history()     
+    user_id = add_user(history)
 
     while(True):    
         print("\n====== Typing Speed Test Game ======")
@@ -177,9 +235,9 @@ def main():
         
         choice = input("Enter your choice [1-4]: ")
         if choice == "1":
-            start_game(data, history)
+            start_game(data, history, user_id)
         elif choice == "2":
-            view_history(history)
+            view_history(history, user_id)
         elif choice == "3":
             change_limit(data)
         elif choice == "4":
