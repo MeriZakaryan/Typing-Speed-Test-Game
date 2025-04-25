@@ -47,6 +47,30 @@ def save_history(history):
     with open(HISTORY_JSON, 'w') as info:
         json.dump(history, info, indent=4)
 
+def startGame(data, history):
+    print("\n Choose level difficulty:")
+    print("1. Easy")
+    print("2. Medium")
+    print("3. Hard")
+
+    level = input("Enter your choice [1-3]: ")
+    if level == "1":
+        quote_type = "short"
+    elif level == "2":
+        quote_type = "medium"
+    elif level == "3":
+        quote_type = "long"
+    else:
+        print("Invalid choice. Returning to menu.")
+        return
+
+    text = random.choice(data["sample_texts"][quote_type])
+    print("\nHere is your text. Type as fast as you can! Pay attention to accuracy :)")
+    print("\n" + "-"*100)
+    print(text)
+    print("-"*100)
+
+
 
 def main():
     data = get_data()
@@ -54,5 +78,6 @@ def main():
 
     # print(data)
     # print(history)
+    startGame(data, history)
 
 main()
