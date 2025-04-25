@@ -1,16 +1,37 @@
 [
     {
-        "difficulty": "short",
-        "wpm": 40.31,
-        "word_accuracy": 100.0,
-        "char_accuracy": 100.0,
-        "date": "2025-04-26 01:54:47"
-    },
-    {
         "difficulty": "medium",
         "wpm": 35.52,
         "word_accuracy": 88.0,
         "char_accuracy": 10.22,
         "date": "2025-04-26 01:55:57"
+    },
+    {
+        "difficulty": "medium",
+        "wpm": 28.09,
+        "word_accuracy": 75.0,
+        "char_accuracy": 38.95,
+        "date": "2025-04-26 02:07:52"
+    },
+    {
+        "difficulty": "hard",
+        "wpm": 33.89,
+        "word_accuracy": 91.38,
+        "char_accuracy": 89.6,
+        "date": "2025-04-26 02:10:16"
+    },
+    {
+        "difficulty": "easy",
+        "wpm": 38.58,
+        "word_accuracy": 100.0,
+        "char_accuracy": 100.0,
+        "date": "2025-04-26 02:13:02"
+    },
+    {
+        "difficulty": "medium",
+        "wpm": 36.19,
+        "word_accuracy": 84.0,
+        "char_accuracy": 34.31,
+        "date": "2025-04-26 02:15:41"
     }
 ]

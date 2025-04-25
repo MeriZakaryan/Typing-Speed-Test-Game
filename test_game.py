@@ -15,7 +15,7 @@ def get_data():
         return {
             "history_limit": 5,
             "sample_texts": {
-                "short": [
+                "easy": [
                     "Be yourself; everyone else is already taken.",
                     "A room without books is like a body without a soul.",
                 ],
@@ -23,7 +23,7 @@ def get_data():
                     "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.",
                     "Be who you are and say what you feel, because those who mind don't matter, and those who matter don't mind."
                 ],
-                "long": [
+                "hard": [
                     "Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do. So throw off the bowlines. Sail away from the safe harbor. Catch the trade winds in your sails. Explore. Dream. Discover.",
                     "The TV business is uglier than most things. It is normally perceived as some kind of cruel and shallow money trench through the heart of the journalism industry, a long plastic hallway where thieves and pimps run free and good men die like dogs, for no good reason.",
                 ]
@@ -33,10 +33,11 @@ def get_data():
 
 def get_history():
     try:
-        with open(HISTORY_JSON, "r") as history:
-            if not history.read():
-                return []  # Empty file fallback
-            return json.loads(history.read())
+        with open(HISTORY_JSON, "r") as history_file:
+            content = history_file.read()
+            if not content.strip():
+                return []  # File is empty
+            return json.loads(content)
     except FileNotFoundError:
         return []
     
@@ -88,13 +89,13 @@ def start_game(data, history):
 
     choice = input("Enter your choice [1-3]: ")
     if choice == "1":
-        level = "short"
+        level = "easy"
     elif choice == "2":
         level = "medium"
     elif choice == "3":
-        level = "long"
+        level = "hard"
     else:
-        print("Invalid choice. Returning to menu.")
+        print("Invalid choice. Try again.")
         return
 
     text = random.choice(data["sample_texts"][level])
@@ -146,7 +147,8 @@ def view_history(history):
         print(f"Difficulty Level: {entry['difficulty']}")
         print(f"WPM: {entry['wpm']}")
         print(f"Word Accuracy: {entry['word_accuracy']}%")
-        print(f"Character Accuracy: {entry['char_accuracy']}%\n")
+        print(f"Character Accuracy: {entry['char_accuracy']}%")
+        print(f"Date: {entry['date']}\n")
 
 
 def change_limit(data):
