@@ -47,6 +47,36 @@ def save_history(history):
     with open(HISTORY_JSON, 'w') as info:
         json.dump(history, info, indent=4)
 
+def calculate_reults(start, end, text, typed_text):
+    passed_time = end - start
+    if passed_time > 0:
+        minutes = passed_time / 60
+    else:
+        minutes = 1
+
+    sample_words = text.strip().split()
+    player_words =  typed_text.strip().split()
+    word_count = len(player_words)   
+    wpm = word_count / minutes
+
+    corrects = 0
+    for player_word, sample_word in zip(player_words, sample_words):
+        if player_word == sample_word:
+            corrects += 1
+    
+    word_accuracy = corrects / len(sample_words) * 100
+
+    corrects = 0
+    total_chars = len(text)
+    for char in range(min(len(typed_text), total_chars)):
+        if typed_text[char] == text[char]:
+            corrects += 1
+    
+    char_accuracy = corrects / total_chars * 100
+
+    return wpm, word_accuracy, char_accuracy
+
+
 def startGame(data, history):
     print("\n Choose level difficulty:")
     print("1. Easy")
@@ -69,6 +99,22 @@ def startGame(data, history):
     print("\n" + "-"*100)
     print(text)
     print("-"*100)
+
+    input("\nPress ENTER to start")
+    print("Type below:\n")
+    start = time.time()
+    typed_text = input()
+    end = time.time()
+
+    wpm, word_accuracy, char_accuracy = calculate_reults(start, end, text, typed_text)
+
+    print("\nResults")
+    print("" + "-"*100)
+    print(f"WPM(Word per minute): {wpm:.2f}")
+    print(f"Word Accuracy: {word_accuracy:.2f}%")
+    print(f"Character Accuracy: {char_accuracy:.2f}%")
+
+
 
 
 
