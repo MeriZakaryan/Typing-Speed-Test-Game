@@ -1,6 +1,6 @@
 import json
 import time
-from datetime import datetime
+import datetime
 import random
 
 DATA_JSON = "data.json"
@@ -30,6 +30,7 @@ def get_data():
             }
         }
 
+
 def get_history():
     try:
         with open(HISTORY_JSON, "r") as history:
@@ -39,6 +40,7 @@ def get_history():
     except FileNotFoundError:
         return []
     
+
 def save_data(data):
     with open(DATA_JSON, 'w') as info:
         json.dump(data, info, indent=4)
@@ -46,6 +48,7 @@ def save_data(data):
 def save_history(history):
     with open(HISTORY_JSON, 'w') as info:
         json.dump(history, info, indent=4)
+
 
 def calculate_reults(start, end, text, typed_text):
     passed_time = end - start
@@ -77,24 +80,24 @@ def calculate_reults(start, end, text, typed_text):
     return wpm, word_accuracy, char_accuracy
 
 
-def startGame(data, history):
+def start_game(data, history):
     print("\n Choose level difficulty:")
     print("1. Easy")
     print("2. Medium")
     print("3. Hard")
 
-    level = input("Enter your choice [1-3]: ")
-    if level == "1":
-        quote_type = "short"
-    elif level == "2":
-        quote_type = "medium"
-    elif level == "3":
-        quote_type = "long"
+    choice = input("Enter your choice [1-3]: ")
+    if choice == "1":
+        level = "short"
+    elif choice == "2":
+        level = "medium"
+    elif choice == "3":
+        level = "long"
     else:
         print("Invalid choice. Returning to menu.")
         return
 
-    text = random.choice(data["sample_texts"][quote_type])
+    text = random.choice(data["sample_texts"][level])
     print("\nHere is your text. Type as fast as you can! Pay attention to accuracy :)")
     print("\n" + "-"*100)
     print(text)
@@ -109,21 +112,78 @@ def startGame(data, history):
     wpm, word_accuracy, char_accuracy = calculate_reults(start, end, text, typed_text)
 
     print("\nResults")
-    print("" + "-"*100)
+    print("-"*100)
     print(f"WPM(Word per minute): {wpm:.2f}")
     print(f"Word Accuracy: {word_accuracy:.2f}%")
     print(f"Character Accuracy: {char_accuracy:.2f}%")
 
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    history.append({
+        "difficulty": level,
+        "wpm": round(wpm, 2),
+        "word_accuracy": round(word_accuracy, 2),
+        "char_accuracy": round(char_accuracy, 2),
+        "date": current_date
+    }) 
+
+    if len(history) > data["history_limit"]:
+        history.pop(0)
+
+    save_history(history)
+    print("Test data saved to history.\n")
 
 
+def view_history(history):
+    print("\nGame History")
+    print("-"*100)
+
+    if not history:
+        print("No history available.")
+        return
+    
+    for entry in history:
+        print(f"Difficulty Level: {entry['difficulty']}")
+        print(f"WPM: {entry['wpm']}")
+        print(f"Word Accuracy: {entry['word_accuracy']}%")
+        print(f"Character Accuracy: {entry['char_accuracy']}%\n")
+
+
+def change_limit(data):
+    try:
+        new_limit = int(input("Enter new limit (e.g. 3): "))
+        if new_limit <= 0:
+            print("History limit should be greater than 0.")
+            return
+        data["history_limit"] = new_limit
+        save_data(data)
+        print("History limit updated.\n")
+    except ValueError:
+        print("Invalid input. Enter a number.")
 
 
 def main():
     data = get_data()
-    history = get_history()         
+    history = get_history()     
 
-    # print(data)
-    # print(history)
-    startGame(data, history)
+    while(True):    
+        print("\n====== Typing Speed Test Game ======")
+        print("1. Take a Typing Test")
+        print("2. View History")
+        print("3. Change History Limit")
+        print("4. Exit")
+        
+        choice = input("Enter your choice [1-4]: ")
+        if choice == "1":
+            start_game(data, history)
+        elif choice == "2":
+            view_history(history)
+        elif choice == "3":
+            change_limit(data)
+        elif choice == "4":
+            print("\nGoodbye!!!!")
+            break
+        else:
+            print("Invalid option. Try again.")
 
 main()

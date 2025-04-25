@@ -1,0 +1,16 @@
+[
+    {
+        "difficulty": "short",
+        "wpm": 40.31,
+        "word_accuracy": 100.0,
+        "char_accuracy": 100.0,
+        "date": "2025-04-26 01:54:47"
+    },
+    {
+        "difficulty": "medium",
+        "wpm": 35.52,
+        "word_accuracy": 88.0,
+        "char_accuracy": 10.22,
+        "date": "2025-04-26 01:55:57"
+    }
+]
