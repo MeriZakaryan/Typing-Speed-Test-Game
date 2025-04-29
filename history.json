@@ -8,6 +8,13 @@
                 "word_accuracy": 100.0,
                 "char_accuracy": 100.0,
                 "date": "2025-04-26 03:11:26"
+            },
+            {
+                "difficulty": "hard",
+                "wpm": 36.57,
+                "word_accuracy": 93.1,
+                "char_accuracy": 10.4,
+                "date": "2025-04-29 21:37:16"
             }
         ]
     },

@@ -142,7 +142,7 @@ def view_history(history, user_id):
     print("\nGame History")
     print("-"*100)
 
-    user_info = history[user_id]["entries"]
+    user_info = history[user_id]["info"]
     if not user_info:
         print("No history available.")
         return
