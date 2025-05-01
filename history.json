@@ -27,6 +27,25 @@
                 "word_accuracy": 88.0,
                 "char_accuracy": 96.35,
                 "date": "2025-04-26 03:13:40"
+            },
+            {
+                "difficulty": "easy",
+                "wpm": 37.9,
+                "word_accuracy": 43.75,
+                "char_accuracy": 44.59,
+                "date": "2025-05-01 20:07:03"
+            }
+        ]
+    },
+    "7bf50e8d-e3b9-4005-b7c5-ee65482ff278": {
+        "username": "Gohar",
+        "info": [
+            {
+                "difficulty": "medium",
+                "wpm": 33.52,
+                "word_accuracy": 100.0,
+                "char_accuracy": 100.0,
+                "date": "2025-05-01 20:09:16"
             }
         ]
     }
